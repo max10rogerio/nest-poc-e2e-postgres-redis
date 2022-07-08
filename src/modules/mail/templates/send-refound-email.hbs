@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estorno de pagamento do seguro realizado</title>
+</head>
+<body style="margin: 0">
+  {{> header}}
+  <!-- START CONTENT -->
+    <table
+      style="
+        width: 600px;
+        height: 366px;
+        background: #f6f6f8;
+        left: 0%;
+        right: 0%;
+        top: 0%;
+        bottom: 0%;
+        border: none;
+        border-spacing: 0;
+      "
+    >
+      <tbody>
+        <tr>
+          <td>
+            <div
+              style="
+                padding: 24px 16px;
+                width: 507px;
+                background: #ffffff;
+                border-radius: 8px;
+                margin-left: 30px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <p
+                style="
+                  font: 16px 'Helvetica Neue', Arial, Helvetica;
+                  font-weight: 400;
+                  line-height: 24px;
+                  color: #646981;
+                  padding: 0px 16px;
+                  margin-top: 0px;
+                "
+              >
+                O segurado solicitou o cancelamento do bilhete pelo aplicativo Gazin Bank em até 7 dias corridos, por
+                isso realizamos o estorno do pagamento do débito em conta.
+              </p>
+              <div style="padding-left: 16px">
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    margin-bottom: 4px;
+                  "
+                >
+                  <strong>Número do bilhete:</strong> {{ticketNumber}}
+                </p>
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    margin: 4px 0px;
+                  "
+                >
+                  <strong>Nome:</strong> {{name}}
+                </p>
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    margin: 4px 0px;
+                  "
+                >
+                  <strong>Seguro:</strong> {{insurance}}
+                </p>
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    margin-top: 4px;
+                    margin-bottom: 24px;
+                  "
+                >
+                  <strong>Data do cancelamento:</strong> {{ formatDate cancellationDate }}
+                </p>
+              </div>
+              <p
+                style="
+                  padding-left: 16px;
+                  margin: 0;
+                  font: 16px 'Helvetica Neue', Arial, Helvetica;
+                  font-weight: 400;
+                  line-height: 24px;
+                  color: #646981;
+                  margin-bottom: 0;
+                "
+              >
+                Por favor, verifique o status do bilhete no ERP da seguradora e realize as alterações necessárias.
+              </p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- END CONTENT -->
+  {{> footer}}
+</body>
+</html>

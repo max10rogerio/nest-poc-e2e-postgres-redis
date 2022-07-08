@@ -1,0 +1,45 @@
+name: Run Tests
+
+on: push
+
+jobs:
+  integration-test:
+    run-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14.1
+        env:
+          POSTGRES_HOST: "postgres"
+          POSTGRES_DB: "gazin_seguros_bank_test"
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+      - name: Install puppeteer deps
+        run: |
+          apt-get update \
+          && apt-get install -y wget gnupg \
+          && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+          && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+          && apt-get update \
+          && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+          --no-install-recommends \
+          && rm -rf /var/lib/apt/lists/*
+      - name: Install yarn deps
+        run: yarn
+      - name: Run Tests (E2E and Unit)
+        run: yarn test:cov --detectOpenHandles

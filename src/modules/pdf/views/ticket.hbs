@@ -1,0 +1,948 @@
+<html lang='pt-BR'>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Bilhete {{product.contractName}}</title>
+    <style>
+      /* Global Style Configs */
+      * {
+          font-family: Verdana, sans-serif;
+          font-size: 3.70mm;
+          margin: 0;
+          padding: 0;
+      }
+      html {
+          zoom: 0.753;
+      }
+      thead {
+          font-weight: bold;
+      }
+      p {
+          padding: 0.79375mm 0mm;
+          line-height: 1.3;
+      }
+      ol {
+        margin-left: 5mm;
+      }
+
+      /* Global Common Styles */
+      .flex {
+          display: flex;
+      }
+      .flex-1 {
+          flex: 1;
+      }
+      .flex-2 {
+          flex: 2;
+      }
+      .flex-column {
+          flex-direction: column;
+      }
+      .justify-center {
+          justify-content: center;
+      }
+      .align-center {
+          align-items: center;
+      }
+      .text-center {
+          text-align: center;
+      }
+      .text-underline {
+          text-decoration: underline;
+      }
+      .text-justify {
+          text-align: justify;
+      }
+      .to-uppercase {
+          text-transform: uppercase;
+      }
+      .padding-horizontal {
+          padding: 0mm 3.175mm;
+      }
+      .padding-top {
+          padding-top: 0.79375mm;
+      }
+      .spacing-5 {
+          padding: 1.32mm;
+      }
+      /* Partial Styles */
+      .block__header {
+          text-align: center;
+          padding: 0.80mm 0mm;
+          background-color: #2f5496;
+          color: #fff;
+          text-transform: uppercase;
+          margin-top: 3mm;
+      }
+      .block__content {
+          margin-bottom: 1.59mm;
+      }
+      .page-space {
+        height: 1mm;
+      }
+    </style>
+    <style>
+      #print-table-thead header {
+        height: 70px;
+        align-items: center;
+      }
+
+      #print-table-tfoot footer {
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      @page {
+        margin: 0mm
+      }
+
+      @media print {
+        body { margin: 5mm; }
+        #print-table-thead { display: table-header-group; } 
+        #print-table-tfoot { display: table-footer-group; }
+
+        #print-table-tfoot footer {
+          height: 100px;
+          width: 100%;
+          bottom: 0;
+          position: fixed;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .page-footer-space {
+          height: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>    
+    <table id="print-table">
+      <thead id="print-table-thead">
+        <tr>
+          <td>
+            <!-- START HEADER -->
+            <header class='flex flex-1 align-center'>
+              <div>
+                <img
+                  class='logo'
+                  width='142mm'
+                  height='42mm'
+                  src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMkAAAA5CAMAAACriv8uAAAAQlBMVEVHcEz////OzuVzdbUvMZIvMZIvMZIvMZIvMZIvMZKoqtKBgbzf3+5XWafy8vg6O5iSk8ZISZ+5utqcnctmZ69cXqoYTCDEAAAACnRSTlMA////6sj/UxyUQcJfEwAABK5JREFUaN7dmt2aoyAMhgdov7aKEH68/1vdA7QNiFjd7e7anMwzVJSQ5CUEfn6acntcL/j/5Xr72dDjirPIo6nIAyeS27co0jLK7VSK4LKqyP1yLk3wJb7VsMn9ZIrg+i0mWWXXDd/iXO0l0Q1R9RS6PyoRAHrWQADg2p3GoyYZ+uClEZ8Q4wA43tIDgG93shtRUiXwSB/SIQmV45YAMLQ79fPg7m+He+w+qYUQQlsAkbeMACDbnbYW+JLAlrT4tCgA4J/xAKDaneYoubxnEleaQ/tAvfrDAgCWN1gAGJt94pZJ8nCnTA/jlT0ngV3mV4beVsPGnjrvvZdSSikD0Mt1iQBArMEDgOOPUIIna+n3EDhmBune08OqsKDcALuODBOxTeAU3fIggdXye1syUA03HRBWFZEO5bh1hcBDMaA9BB74NGr3WllCJvSyRi/XFjC3apIwmZ+3xQqBA2D1MQLzfon3k+jqUGCDWV/1ujXPUpWXVgmsATpIYFpRhKoZw0IPrfUrfG3nnyJrlu55V1fOY3Ivble/h8CmcNIZZ6aWMSj+YRmiW40kZSoMyXjQVeZLCEFdoey7BFZlUjRJ4ScSACxr1OQAID4XsCFThD1pnkGb8cDYynwJIXTFo98icFcBHgAopbgBxnzVmUfnqvaEY66lXz+4Vi6pfjcHlhWnnKGW/8QYJ2er+9xXKuuTZ9PTIrCvZPb7cmBZd678J+NyRebRxXzfsfQhw9/ZJLBb5pE7c+B1TfrMX3lCo2cxlb6We9a48qkUdyoPf/N7OXAnqg6S8dHYzS3E04dGprG0KzOToqr4QgkZv3PLq1YinvuIKoaxsu8oqUprM7MkcF/JW9zOKgRHfOD4yT2hvZeU88v8egJHDQLrSlYRdlchQj0N9pm/bphkAu2gxRJvtZW2JHBcUXZfFSLPFzo12IIzPvuqeYb7IsB6Nlg5Dk+x2wReRtKBKkSeC8/jLeo6ehkRJYFt16LBsIgquYiIozkwKww1gyBkyZmupMq03Ha2xl0lcOlcOwlcSy7qfNULUvf5E8o0aaC2CFxEkt8d7vWCxDJjkItdisnmPLRpsE3gYjnZS2Ae9yv7J1lYwC+IJ9s2XeTuqZ66IHAWSeGwSVII9xVx5eoyNWRPVHvyFyjWEFPl+SlzqjyyZw7Vgd+UUNtWflzuHzj2eXm6/PcHvbwKMewTvupMPkzE9o6Sha+lMCX0Y5oAo9JfYsFFFnDTPleTBaCmqrShZ5bzDoH9gcL0tH3qXsQkohGAQ/dKOJxPm5IxDVdPv0ghCJTWHmuEEC5qIbRKEagT5jsiBcDtCPfx2GGBebHrtQnxLIY8nMk2XX6aBS9EYCtQRzbO1KJk5rAsuF3fILDcfVrgbUoQ2QY5EgUhhLbEEnglhJATdL2lZEPrhegQ0z9GCDMpQMDonzUBR0RGCLPnJK4/cPAhHQAbErj6+aRFk2JrhY7AVJ6kNM5ppiXFScc0ixFA759vQJxrs4ZoO9wZgb08IN795UOG+7ccvD+OnVf/hwfvayb5+Za7EKfT5Lp+jetkl5/u33KzrnVH8Ew30i7tK6i306hyvW/cpb0/TqDL5frY0OMXyenMwq7+x3QAAAAASUVORK5CYII='
+                  alt='Gazin Logo'
+                />
+              </div>
+              <div class='flex flex-1 flex-column text-center justify-center'>
+                <strong>BILHETE DE {{product.contractName}}</strong>
+                <strong>Ramo:
+                  {{product.group}}
+                  -
+                  {{product.contractName}}
+                  - PROCESSO SUSEP:
+                  {{product.susepCode}}</strong>
+              </div>
+            </header>
+            <!-- END HEADER -->
+          </td>
+        </tr>
+      </thead>
+      <tbody id="print-table-body">
+        <tr>
+          <td>
+            <!-- START DADOS BILHETE -->
+            <div class="page-space">&nbsp;</div>
+            <p class='block__header'>DADOS BILHETE</p>
+            <div class='flex flex-1 block__content'>
+              <div class='flex flex-1 flex-column padding-horizontal'>
+                <p><strong>Número do bilhete: </strong>{{policy.ticket}}</p>
+                <p><strong>Representante de seguros: </strong>{{policy.agent.name}}</p>
+                <p><strong>Corretora: </strong>{{policy.broker.name}}</p>
+              </div>
+              <div class='flex flex-1 flex-column'>
+                <p><strong>Data de emissão do bilhete: </strong>{{toDate policy.createdAt}}</p>
+                <p><strong>CNPJ: </strong>{{toCNPJ policy.agent.cnpj}}</p>
+                <p><strong>Código de registro SUSEP: </strong>{{policy.broker.susepCode}}</p>
+              </div>
+            </div>
+            <!-- END DADOS BILHETE -->
+            <!-- START DADOS DO SEGURADO -->
+            {{#with policy.insured}}
+              <div class="page-space">&nbsp;</div>
+              <section>
+                <p class='block__header'>DADOS DO SEGURADO</p>
+                <div class='flex flex-1 block__content'>
+                  <div class='flex flex-1 flex-column padding-horizontal'>
+                    <p><strong>Nome do segurado: </strong>{{name}}</p>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>Data de Nascimento: </strong>{{toDate birthdate}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>CPF: </strong>{{toCPF cpf}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Sexo: </strong>{{gender}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Telefone: </strong>{{phoneNumber}}</p>
+                      </div>
+                    </div>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>CEP: </strong>{{toCEP address.zipCode}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Endereço: </strong>{{address.street}}</p>
+                      </div>
+                      <div class="flex flex-1">&nbsp;</div>
+                      <div class="flex flex-1">&nbsp;</div>
+                    </div>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>Bairro: </strong>{{address.neighborhood}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Número: </strong>{{address.houseNumber}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Complemento: </strong>{{address.complement}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>UF: </strong>{{address.state}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            {{/with}}
+            <!-- END DADOS DO SEGURADO -->
+            <!-- START DADOS DO IMÓVEL -->
+            {{#if policy.residential}}
+              {{#with policy.residential}}
+                <div class="page-space">&nbsp;</div>
+                <section>
+                  <p class='block__header'>DADOS DO IMÓVEL</p>
+                  <div class='flex flex-1 flex-column block__content'>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>Tipo de moradia: </strong>{{habitation}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Tipo de construção: </strong>{{construction}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Tipo de imóvel: </strong>{{property}}</p>
+                      </div>
+                      <div class="flex flex-1">&nbsp;</div>
+                    </div>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>CEP: </strong>{{toCEP address.zipCode}}</p>
+                      </div>
+                      <div class='flex flex-1'>
+                        <p><strong>Endereço: </strong>{{address.street}}</p>
+                      </div>
+                      <div class="flex flex-1">&nbsp;</div>
+                      <div class="flex flex-1">&nbsp;</div>
+                    </div>
+                    <div class='flex flex-1'>
+                      <div class='flex flex-1'>
+                        <p><strong>Bairro: </strong>{{address.neighborhood}}</p>
+                      </div>
+                      <div class="flex flex-1">
+                        <p><strong>Número: </strong>{{address.houseNumber}}</p>
+                      </div>
+                      <div class="flex flex-1">
+                        <p><strong>Complemento: </strong>{{address.complement}}</p>
+                      </div>
+                      <div class="flex flex-1">
+                        <p><strong>UF: </strong>{{address.state}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              {{/with}}
+            {{/if}}
+            <!-- END DADOS DO IMÓVEL -->
+            <!-- START COBERTURAS E PREMIO DE SEGURO -->
+            <div class="page-space">&nbsp;</div>
+            <section class='flex flex-1 flex-column'>
+              <p class='block__header'>COBERTURAS E PRÊMIO DE SEGURO</p>
+              <div class='flex flex-1 align-center' style='padding-top: 1.33mm; padding-bottom: 2.65mm'>
+                <div class='flex flex-2 justify-center'>
+                  <strong>Cobertura</strong>
+                </div>
+                <div class='flex flex-1 justify-center text-center'>
+                  <strong>Limite máximo de indenização</strong>
+                </div>
+                <div class='flex flex-1 justify-center'>
+                  <strong>Franquia</strong>
+                </div>
+                <div class='flex flex-1 justify-center'>
+                  <strong>Carência</strong>
+                </div>
+                <div class='flex flex-1 justify-center'>
+                  <strong>Valor do prêmio</strong>
+                </div>
+              </div>
+              <hr />
+              {{#each policy.coverages}}
+                <div class='flex flex-1 align-center' style='padding-top: 1.059mm; padding-bottom: 1.59mm'>
+                  <div class='flex flex-2 justify-center text-center'>{{title}}</div>
+                  <div class='flex flex-1 justify-center text-center'>{{capitalText}} {{toMoneyBRL capitalValue}}</div>
+                  <div class='flex flex-1 justify-center'>
+                    {{#if franchiseText}}
+                      {{franchiseText}}
+                    {{else}}
+                      Não há
+                    {{/if}}
+                  </div>
+                  <div class='flex flex-1 justify-center'>
+                    {{#if shortageText}}
+                      {{shortageText}}
+                    {{else}}
+                      Não há
+                    {{/if}}
+                  </div>
+                  <div class='flex flex-1 justify-center'>{{toMoneyBRL prizeValue}}</div>
+                </div>
+                <hr />
+              {{/each}}
+            </section>
+            <!-- END COBERTURAS E PREMIO DE SEGURO -->
+            <!-- START VANTAGENS E ASSISTENCIAS -->
+            <div class="page-space">&nbsp;</div>
+            <section class='flex flex-1 flex-column'>
+              <p class='block__header'>VANTAGENS E ASSISTÊNCIAS</p>
+              {{#each policy.benefitsAndSupports}}
+                <div class='flex flex-1 align-center padding-top'>
+                  <div class='flex flex-1 justify-center text-center'>{{title}}</div>
+                  {{#if capitalValue}}
+                    <div class='flex flex-1 justify-center'>{{toMoneyBRL capitalValue}} bruto de IR</div>
+                    <div class='flex flex-1 justify-center'>Número da sorte: {{@root.policy.luckNumber}}</div>
+                  {{else}}
+                    <div class='flex flex-2'>{{generalText}}</div>
+                  {{/if}}
+                </div>
+                <hr />
+              {{/each}}
+            </section>
+            <!-- END VANTAGENS E ASSISTENCIAS -->
+            <!-- START DADOS DO PAGAMENTO -->
+            <div class="page-space">&nbsp;</div>
+            <section class='flex flex-1 flex-column'>
+              <p class='block__header'>DADOS DO PAGAMENTO</p>
+              <div class='flex flex-1 flex-column padding-horizontal'>
+                <div class='flex flex-1 align-center'>
+                  <div class='flex flex-1'>
+                    <p>Períodicidade do prêmio: <strong>Mensal</strong></p>
+                  </div>
+                  <div class='flex flex-1 justify-center'>
+                    <p>Pagamento: <strong>1 + 11</strong></p>
+                  </div>
+                  <div class='flex flex-1 justify-center'>
+                    <p>Forma de pagamento: <strong>Débito em conta</strong></p>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class='flex flex-1 flex-column padding-horizontal'>
+                <div class='flex flex-1'>
+                  <div class='flex flex-1'>
+                    <p>Valor total do prêmio: <strong>R$ 118,00</strong></p>
+                  </div>
+                  <div class='flex flex-1 justify-center'>
+                    <p>IOF({{policy.iofPercent}}%): <strong>{{toMoneyBRL policy.iofValue}}</strong></p>
+                  </div>
+                  <div class='flex flex-1'></div>
+                </div>
+              </div>
+              <hr />
+              <br><br>
+              <div class='flex flex-1 flex-column'>
+                <div class='flex flex-1' style="gap: 2;">
+                  <div class='flex flex-1 align-center justify-center'>
+                    <table style='width: 132.29mm;'>
+                      <thead>
+                        <tr>
+                          <td style="padding-top: 1mm">Parcela</td>
+                          <td style="padding-top: 1mm">Vencimento</td>
+                          <td style="padding-top: 1mm">IOF</td>
+                          <td style="padding-top: 1mm">Valor</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{#each policy.payments}}
+                          <tr>
+                            <td colspan='1' style="padding-left: 1mm; padding-bottom: 2mm; padding-top: 1mm">{{number}}</td>
+                            <td colspan='1'>
+                              {{#if @first}}
+                                Á vista
+                              {{else}}
+                                {{toDate dueDate}}
+                              {{/if}}
+                            </td>
+                            <td colspan='1'>{{toMoneyBRL iofValue}}</td>
+                            <td>{{toMoneyBRL totalValue}}</td>
+                          </tr>
+                        {{/each}}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <br>
+              </div>
+            </section>
+            <!-- END DADOS DO PAGAMENTO -->
+            <!-- START VIGÊNCIA COM RENOVAÇÃO MENSAL -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>VIGÊNCIA COM RENOVAÇÃO MENSAL</p>
+              <div class='flex flex-1 block__content flex-column justify-center spacing-5'>
+                <p class="text-center">A vigência do bilhete terá início em {{toDate policy.startDate}} finalizando em 30 dias e será renovada por mais 30 dias após o débito em conta da parcela.</p>
+                <p style="font-size: 11px; width: 100%;" class="text-center">* A programação de débito em conta seguirá conforme a data da cobrança exibida na tabela acima.</p>
+              </div>
+            </section>
+            <!-- END VIGÊNCIA COM RENOVAÇÃO MENSAL -->
+            <!-- START PERÍODO DE RENOVAÇÃO AUTOMÁTICA -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>PERÍODO DE RENOVAÇÃO AUTOMÁTICA</p>
+              <div class='flex flex-1 block__content flex-column justify-center spacing-5'>
+                <p style="margin-bottom: 5px;" class="text-center">Inicia em {{toDate policy.startDate}} e termina em {{toDate policy.endDate}}</p>
+                <hr>
+                <p style="margin-top: 5px; padding: 1.05mm 2.65mm;" class="text-justify">O não pagamento de qualquer uma das parcelas até a data de vencimento implica na suspensão da cobertura a partir das 24 horas da referida data. As coberturas serão restabelecidas a partir das 24 horas do dia em que o Segurado retomar o pagamento, não sendo cobrados prêmios referentes ao período de suspensão. Decorridos 5 dias do vencimento da parcela em aberto sem que o pagamento do prêmio tenha sido efetuado, o seguro estará automaticamente e de pleno direito cancelado e a cobertura não poderá ser reabilitada. Não há cobertura no período após o cancelamento e, em caso de sinistro, o segurado perde direito à indenização.</p>
+              </div>
+            </section>
+            <!-- END PERÍODO DE RENOVAÇÃO AUTOMÁTICA -->
+            <!-- START SOBRE O SEGURO -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>SOBRE O SEGURO</p>
+              <div class='block__content padding-horizontal text-justify'>
+                {{#if policy.residential}}
+                  <p><strong>1. IMÓVEIS ELEGÍVEIS AO SEGURO:</strong></p>
+                  <p>Somente serão elegíveis a este seguro os imóveis de Residência Habitual.</p>
+                  <p><strong>1.1 CONDIÇÕES GERAIS: Assistências Básicas.</strong></p>
+                  <ul style="list-style: none;">
+                    <li>
+                      <span class='text-underline'>Chaveiro Residencial:</span>
+                      Em caso de perda, roubo das chaves ou quebra da mesma dentro da fechadura, a GAZIN, através de seus
+                      prestadores conveniados, enviará um profissional especializado para abrir a porta danificada, contanto que
+                      tecnicamente possível e se o Cliente não tiver alternativa para entrar na sua residência. Condições do
+                      Serviço: Não está incluído serviço de abertura em portas e jantes internas, armários e depósitos, bem como
+                      substituição de materiais (travas, fechaduras). O Cliente terá direito a uma cópia da chave desde que essa
+                      seja do tipo convencional/simples.
+                    </li>
+                    <li>
+                      <span class='text-underline'>Reparos Hidráulicos:</span>
+                      Em caso de mau funcionamento das instalações hidráulicas do local assistido que resulte em vazamentos
+                      contínuos ou alagamentos, a GAZIN providenciará, através de seus prestadores conveniados, o envio de um
+                      profissional para atendimento emergencial para solucionar o problema, uma vez que tecnicamente possível.
+                      Condições do Serviço: Não estão inclusos serviços de caça vazamentos ou serviços relacionados à tubulação
+                      de cobre ou ferro, caixa de gordura e esgoto. Os custos de peças de reposição são de responsabilidade do
+                      Cliente. Não estão cobertos custos com reparo definitivo, reparo de torneiras, reservatórios subterrâneos,
+                      aquecedores, caixa d'água, bombas hidráulicas, assim como o desentupimento de banheiros, sifões ou
+                      reparação de goteiras por má impermeabilização ou proteção das paredes externas do imóvel, serviços de
+                      alvenaria e caça vazamentos.
+                    </li>
+                    <li>
+                      <span class='text-underline'>Reparos Elétricos:</span>
+                      Envio de profissional para mão de obra de assistência a danos na parte elétrica da residência assistida em
+                      casos de falta parcial ou total de energia. Condições do Serviço: Não está incluso o reparo de elementos
+                      próprios da iluminação, tais como lâmpadas, interruptores, tomadas, bombas elétricas, assim como reparação
+                      de lesões de aparelhos de calefação e eletrodomésticos. Estão excluídos eventos que resultem de instalação
+                      amadora ou clandestina. Não estão cobertos danos elétricos causados por incêndio ou por queda de raios.
+                    </li>
+                  </ul>
+                  <br />
+
+                  <p><strong>2. ELEGIBILIDADE:</strong></p>
+                  <p>
+                    Só serão aceitos, neste seguro, segurados com idades entre 18 e 80 anos completos na data de adesão ao
+                    Microsseguro. Para fins deste Microsseguro, considera-se data de adesão ao seguro, a data do pagamento do
+                    prêmio.
+                  </p>
+                  <br />
+                  <p><strong>2. PAGAMENTO DO PRÊMIO:</strong></p>
+                  <p>
+                    O não pagamento do prêmio até o dia previsto no documento de cobrança acarretará no automático cancelamento
+                    da cobertura do Microsseguro independentemente de qualquer interpelação judicial ou extrajudicial.
+                  </p>
+                  <br />
+                  <p><strong>3. PAGAMENTO DA INDENIZAÇÃO:</strong></p>
+                  <p>
+                    Cumpridas pelo Segurado todas as exigências constantes das Condições Gerais do Microsseguro e entregues
+                    todos os documentos necessários para a apuração do prejuízo, a Seguradora efetuará o pagamento da
+                    indenização no prazo máximo de 30 (trinta) dias, contados da data de entrega de todos os documentos básicos.
+                  </p>
+                  <br />
+                  <p><strong>5. ARREPENDIMENTO:</strong></p>
+                  <p>
+                    O presente seguro poderá ser cancelado ou rescindido no prazo de 7 (sete) dias corridos a contar da data de
+                    emissão do Bilhete, em caso de desistência do seguro contratado por parte do Segurado, sendo que:
+                    <br />
+                    O Segurado poderá exercer seu direito de arrependimento pelo mesmo meio utilizado para a contratação, sem
+                    prejuízo de outros meios que possam ser disponibilizados pela Seguradora;
+                    <br />
+                    A Seguradora, ou seu representante de seguros, conforme for o caso, fornecerão ao Segurado confirmação
+                    imediata do recebimento da manifestação de arrependimento, sendo obstada, a partir desse momento, qualquer
+                    possibilidade de cobrança; Os valores eventualmente pagos, a qualquer título, durante os até 7 (sete) dias
+                    decorridos, serão devolvidos, de imediato, pelo mesmo meio e forma de efetivação do pagamento do prêmio, sem
+                    prejuízo de outros meios ou formas disponibilizadas pela Seguradora, desde que expressamente aceito pelo
+                    Segurado.
+                  </p>
+                {{else}}
+                  <p>
+                    Este seguro visa garantir, de acordo com as condições e até os limites contratados pelo Segurado junto à
+                    Seguradora ou ao seu Representante de Seguros, o pagamento de indenização aos Beneficiários, caso o Segurado
+                    venha a sofrer um dos eventos previstos nas coberturas do contratadas.
+                  </p>
+                  <br />
+                  <p>
+                    <strong>Diárias por Internação Hospitalar (DIH):</strong>
+                    Esta cobertura consiste no pagamento de indenização proporcional ao período de internação hospitalar do
+                    Segurado, limitado ao número máximo de diárias contratadas e observadas a carência e/ou franquia, quando
+                    previstas no Bilhete de Microsseguro. Caracteriza-se como evento a internação em Hospital, pelo período
+                    mínimo de 24 (vinte e quatro horas), devidamente comprovada. As diárias serão contadas a cada período de 24
+                    (vinte e quatro) horas de permanência do Segurado em regime de internação hospitalar, caracterizada pela
+                    utilização de acomodação qualquer que seja o tipo, para tratamento médico-hospitalar que não possa ser
+                    realizado em regime ambulatorial, domiciliar ou em consultório.
+                    <br />
+                    Pelo mesmo evento, o número de diárias indenizadas não pode superar a quantidade contratada e indicada no
+                    Bilhete, respeitando o limite máximo de 365 (trezentos e sessenta e cinco) diárias por evento, sendo que nas
+                    reinternações, as diárias serão cumulativas para este efeito. Considera-se reinternação a internação que se
+                    inicia no período de vigência deste Microsseguro, respeitado o limite máximo de indenização, e que resulte
+                    do mesmo diagnóstico, ou de diagnósticos relacionados com períodos anteriores de internação indenizada.
+                    <br />
+                    Caso o Segurado seja submetido a mais de uma internação que tenham por origem ou causa o mesmo acidente ou a
+                    mesma doença, tais internações serão consideradas como um mesmo evento, exceto quando o intervalo entre as
+                    internações foi superior a 6 (seis) meses. A Seguradora efetuará o pagamento das diárias correspondentes ao
+                    período em que o Segurado esteve internado, a contar do primeiro dia após o período de franquia contratado,
+                    até a alta médica ou a utilização do limite de diárias estabelecidos no Bilhete, o que ocorrer primeiro.
+                    Esta cobertura não garante a internação ou vaga em Hospital, que devem ser procuradas pelo Segurado, seu
+                    médico ou por quem os represente.
+                    <br />
+                    Carência: Período contínuo de tempo, contado a partir da data de início de vigência do seguro ou do aumento
+                    do capital segurado ou da recondução, no caso de suspensão da cobertura, durante o qual, na ocorrência de
+                    sinistro, o Segurado ou os Beneficiários não terão direito à percepção dos capitais segurados contratados.
+                    <br />
+                    Franquia: É o período contínuo de tempo, contado a partir da data do sinistro, durante o qual a Seguradora
+                    estará isenta de qualquer responsabilidade indenizatória.
+                    <br />
+                    Poderão ser segurados os clientes que tenham entre 18 (dezoito) e 65 (sessenta e cinco) anos, que estejam em
+                    perfeitas condições de saúde, mediante o pagamento do prêmio de seguro.
+                  </p>
+                {{/if}}
+              </div>
+            </section>
+            <!-- END SOBRE O SEGURO -->
+            <!-- START BENEFICIARIOS -->
+            {{#unless policy.residential}}
+              <div style="height: 10px;">&nbsp;</div>
+              <section>
+                <p class='block__header'>BENEFICIÁRIOS</p>
+                <div class='padding-horizontal'>
+                  <p>O beneficiário deste seguro para todas as coberturas será o próprio segurado.</p>
+                </div>
+              </section>
+            {{/unless}}
+            <!-- END BENEFICIARIOS -->
+            <!-- START RISCOS EXCLUÍDOS -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>RISCOS EXCLUÍDOS</p>
+              {{#if policy.residential}}
+                <div class='padding-horizontal block__content'>
+                  <p>
+                    Estão expressamente excluídos de todas as coberturas deste seguro os eventos decorrentes de:
+                  </p>
+                  <br />
+                  <p style="padding-left: 5px">a. Má qualidade, vício, desarranjo mecânico, desgaste pelo uso, deterioração,
+                    manutenção/reparo/ajustamento deficiente ou inadequado, erosão, corrosão, ferrugem, oxidação,
+                    incrustação, fadiga, fermentação e/ou combustão natural ou espontânea;</p>
+                  <p style="padding-left: 5px">b. Atos de autoridade pública (civil ou militar), salvo para evitar propagação de danos cobertos por este
+                    microsseguro;</p>
+                  <p style="padding-left: 5px">c. Atos de hostilidade ou de guerra, rebelião, insurreição, revolução, motim, confisco, perturbação de
+                    ordem política e social, guerra revolucionária, subversão e guerrilhas, e atos terroristas, devidamente
+                    reconhecidos como atentatórios à ordem pública pela autoridade pública competente;</p>
+                  <p style="padding-left: 5px">d. Qualquer arma química, biológica, bioquímica, eletromagnética ou sistema eletrônico;</p>
+                  <p style="padding-left: 5px">e. Fissão nuclear, radiações ionizantes, contaminação pela radioatividade de qualquer combustível
+                    nuclear, resíduos nucleares, ou material de armas nucleares;</p>
+                  <p style="padding-left: 5px">f. Falha ou mau funcionamento de qualquer equipamento (e seus componentes ou periféricos), programa e/ou
+                    sistema eletrônico, de telecomunicações ou de interpretação de dados, ainda que devidos a vírus de
+                    computador, ato, falha, inadequação, incapacidade, inabilidade ou decisão do Segurado ou de terceiros;</p>
+                  <p style="padding-left: 5px">g. Atos ilícitos dolosos, ou por culpa grave equiparável ao dolo, praticados pelo Segurado, pelo
+                    Beneficiário ou pelo representante, de um ou de outro.</p>
+                  <br />
+                  <p>Além dos Riscos Excluídos Gerais (acima), não estão cobertos por este seguro, os danos ou perdas
+                    decorrentes de ou relacionados a específicos a cada cobertura, a seguir:</p>
+                  <p><strong>INCÊNDIO, QUEDA DE RAIO, EXPLOSÃO e PAGAMENTO DE ALUGUEL:</strong></p>
+                  <p>Sinistro provocado intencionalmente pelo próprio segurado ou seus familiares, sócios ou pessoas a ele
+                    ligadas legal ou economicamente.</p>
+                  <p><strong>VENDAVAL (INCLUSIVE FURACÃO, CICLONE E TORNADO) E GRANIZO:</strong></p>
+                  <p>Não estão cobertos antenas, muros, cercas, tapumes e portões.</p>
+                  <p><strong>ROUBO OU FURTO QUALIFICADO DE BENS:</strong></p>
+                  <p style="padding-left: 5px;">a. Furto simples, extravio ou simples desaparecimento de equipamento segurado;</p>
+                  <p style="padding-left: 5px;">b. Não estão cobertos telefones celulares, calculadoras, computadores portáteis, tablets e aparelhos de uso
+                    profissional.</p>
+                  <br>
+                </div>
+              {{else}}
+                <div class='flex flex-1 flex-column padding-horizontal block__content'>
+                  <p>
+                    Estão expressamente excluídos de todas as coberturas deste Microsseguro os eventos ocorridos, direta ou
+                    indiretamente, em consequência de:
+                    <br />
+                    <ol type='a'>
+                      <li>
+                        Atos ilícitos dolosos praticados pelo Segurado, pelo Beneficiário ou pelo representante legal de
+                        qualquer deles;
+                      </li>
+                      <li>
+                        Suicídio ou sequelas decorrentes da sua tentativa, caso ocorram nos dois primeiros anos de vigência da
+                        cobertura;
+                      </li>
+                      <li>
+                        Epidemia ou pandemia declarada por órgão competente;
+                      </li>
+                      <li>
+                        Furacões, ciclones, terremotos, maremotos, erupções vulcânicas e outras convulsões da natureza;
+                      </li>
+                      <li>
+                        Danos e perdas causados por atos terroristas;
+                      </li>
+                      <li>
+                        Atos ou operações de guerra, declarada ou não, de guerra química ou bacteriológica, guerra civil,
+                        guerrilha, revolução, motim, revolta, sedição, sublevação ou outras perturbações da ordem pública e
+                        delas decorrentes, exceto a prestação de serviço militar e atos de humanidade em auxílio de outrem.
+                      </li>
+                    </ol>
+                  </p>
+                </div>
+              {{/if}}
+            </section>
+            <!-- END RISCOS EXCLUÍDOS -->
+            <!-- START PERDA DE DIREITO -->
+            {{#unless policy.residential}}
+              <div class="page-space">&nbsp;</div>
+              <section>
+                <p class='block__header'>PERDA DE DIREITO</p>
+                <div class='flex flex-1 padding-horizontal block__content'>
+                  <p>
+                    Sem prejuízo do que consta nas demais condições deste seguro e do que em lei esteja previsto: O Segurado
+                    perderá o direito à indenização se agravar intencionalmente o risco. Se o Segurado, seu representante ou seu
+                    corretor de seguros fizer declarações inexatas ou omitir circunstâncias que pudessem influir na aceitação da
+                    proposta ou no valor do prêmio, ficará prejudicado o direito à indenização, além de estar o Segurado
+                    obrigado ao pagamento do prêmio vencido. O Segurado está obrigado a comunicar à Seguradora, logo que saiba,
+                    qualquer fato suscetível de agravar os riscos cobertos no Bilhete, sob pena de perder o direito à cobertura,
+                    se ficar comprovado que silenciou de má-fé. O segurado poderá desistir do Seguro no prazo de 7 (sete) dias
+                    corridos a contar da emissão do Bilhete e exercerá seu direito de arrependimento, com direito a devolução
+                    dos valores pagos, pelo mesmo meio utilizado para contratação, sem prejuízo de outros meios ou formas
+                    disponibilizadas ao Segurado. O cancelamento do Seguro poderá ser realizado a qualquer momento, a pedido do
+                    segurado, com a devolução proporcional do prêmio pago. Na hipótese de cancelamento até a data de início da
+                    cobertura de risco, a devolução do prêmio será integral com retenção dos emolumentos. Após a data de início
+                    da cobertura, a devolução do prêmio pago será proporcional.
+                  </p>
+                </div>
+              </section>
+              <br>
+            {{/unless}}
+            <!-- END PERDA DE DIREITO -->
+            <!-- START O QUE FAZER EM CASO DE SINISTRO -->
+            <br>
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>O QUE FAZER EM CASO DE SINISTRO</p>
+              <div class='padding-horizontal'>
+                {{#if policy.residential}}
+                  <p class='text-justify'>
+                    Para acionar as Assistências Básicas de Eletricista, Encanador e Chaveiro, ligue para a Central de
+                    Atendimento: 0800 723 1319 de 24 horas por dia e 7 dias da semana.
+                    <br />
+                    Para acionar as Coberturas do Microsseguro Residencial Premiável entre no site
+                    www.gazinseguros.com.br/sinistro ou em caso de dúvidas ligue para a Central de Atendimento: 0800 044 8000 de
+                    segunda à sexta-feira das 08h00 horas às 18h00 horas.
+                    <br />
+                    Em caso de sinistro, o Segurado deverá apresentar à Seguradora como documentação mínima:
+                  </p>
+                  <ol type='a'>
+                    <li>Comunicação da ocorrência do sinistro, com data da ocorrência, descrição detalhada da ocorrência,
+                      inclusive dos bens sinistrados, prejuízos causados pelo evento, e número do bilhete;
+                    </li>
+                    <li>Comprovação de propriedade e/ou de posse do imóvel segurado (interesse segurado, conforme o caso) onde
+                      ocorreu o sinistro e, se for o caso, o respectivo contrato de aluguel;
+                    </li>
+                    <li>Orçamento para o reparo ou reposição dos bens danificados no sinistro, notas fiscais, recibos ou
+                      quaisquer outros documentos que comprovem os valores informados como prejuízos;
+                    </li>
+                    <li>Documento de identificação do segurado; e comprovante de residência, quando couber; </li>
+                    <li>Recortes de jornais noticiando o evento ou a ocorrência do fenômeno, quando se tratar de vendaval,
+                      furacão, ciclone, tornado ou, granizo, ou outros meios que comprovem o evento;
+                    </li>
+                    <li>Registro da ocorrência pela autoridade pública, nos casos de incêndio, explosão ou roubo;</li>
+                    <li>Outros documentos poderão ser solicitados em cada caso concreto, em caso de dúvida fundamentada e
+                      justificada.</li>
+                  </ol>
+                {{else}}
+                  <p class='text-justify'>
+                    Para acionar o Microsseguro DIH entre no site
+                    <strong>www.gazinseguros.com.br/sinistro</strong>
+                    ou em caso de dúvidas ligue para a
+                    <span style='white-space: nowrap'>Central de Atendimento: 0800 044 8000</span>
+                    de segunda à sexta das 08h00 às 18h00, horário de Brasília.
+                    <br />
+                    O segurado deverá apresentar os seguintes documentos a regulação do sinistro: a) Formulário de Aviso de
+                    Sinistro fornecido pela Seguradora, devidamente preenchido e assinado pelo Segurado; b) Cópias dos
+                    documentos de identificação do Segurado (RG e CPF); c) Cópias dos relatório ou laudo preenchido e assinado
+                    pelo profissional habilitado que prestou o atendimento, com as especificações técnicas e diagnósticos
+                    necessários, comprovando o período de internação, datado e assinado pelo Médico Responsável e com indicação
+                    de CRM; d) Cópia do comprovante de residencia;
+                    <br />
+                    A solicitação de qualquer documento comprobatório adicional por parte da Seguradora, além daqueles definidos
+                    nas Condições Especiais de cada cobertura, deverá estar acompanhada de justificativa fundamentada e ocorrer
+                    dentro do prazo máximo para pagamento da indenização. A contagem do prazo para pagamento poderá ser
+                    interrompida uma única vez para solicitação de documentação complementar e voltará a correr na data do seu
+                    recebimento pela Seguradora. O Segurado deve autorizar seu médico-assistente e o hospital a fornecer as
+                    informações clínicas solicitadas pelos peritos médicos da Seguradora, os quais se comprometem a zelar pela
+                    confidencialidade das mesmas, bem como autoriza submeter-se à realização de exame físico pericial por médico
+                    da Seguradora. O prazo máximo para o pagamento da indenização é de 30 (trinta) dias corridos contados a
+                    partir da data de protocolo de entrega da documentação comprobatória, requerida nos documentos contratuais,
+                    junto à Seguradora ou seu Representante. No caso de solicitação de documentação complementar, facultada uma
+                    única vez à Seguradora em caso de dúvida justificável, esse prazo será suspenso, voltando a correr a partir
+                    do dia útil subsequente àquele em que forem completamente atendidas as exigências. Equipara-se a
+                    Representante da Seguradora o Correspondente de Microsseguro autorizado a prover esse tipo de serviço.
+                  </p>
+                {{/if}}
+              </div>
+            </section>
+            <!-- END O QUE FAZER EM CASO DE SINISTRO -->
+            <!-- START DISPOSICOES FINAIS -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>DISPOSIÇÕES FINAIS</p>
+              <div class='padding-horizontal'>
+                <p class='text-justify'>
+                  As condições contratuais do Plano de Seguro a que este bilhete está vinculado encontram-se registradas na
+                  SUSEP de acordo com o número do Processo SUSEP e poderão ser consultadas no endereço eletrônico
+                  <a href='www.susep.gov.br' target='_blank'>www.susep.gov.br</a>
+                  ou no site
+                  <a href='www.gazinseguros.com.br' target='_blank'>www.gazinseguros.com.br</a>
+                  ;
+                  <br />
+                  Em conformidade com a Circular SUSEP Nº 642, DE 20 de setembro DE 2021:
+                  <a href='https://www.consumidor.gov.br' target='_blank'>https://www.consumidor.gov.br</a>
+                  <br />
+                  Em Conformidade com a Resolução CNSP Nº 382, de 04 de março de 2020: o montante da remuneração pela
+                  intermediação do contrato, será de
+                  {{policy.comissionTotalPercentage}}% líquido de IOF ({{policy.iofPercentage}}%), Art. 4, parágrafo 1º, inciso
+                  IV. Remuneração do Representante é de
+                  {{policy.agent.comissionPercentage}}% e
+                  {{toMoneyBRL policy.agent.comissionValue}}, conforme as Resoluções CNSP 369 de 13/12/2018, Art. 4, parágrafo
+                  7º.
+                  <br />
+                  O registro do plano na Susep não implica, por parte da Autarquia, incentivo ou recomendação à sua
+                  comercialização. Serviço de Atendimento gratuito ao Público SUSEP: 0800-0218484.
+                  <br />
+                  A Gazin Ind. e Comércio de Móveis e Eletrodomésticos Ltda e Gazin Seguros S/A fazem parte do mesmo grupo
+                  econômico.
+                </p>
+              </div>
+            </section>
+            <!-- END DISPOSICOES FINAIS -->
+            <!-- START CENTRAL DE ATENDIMENTO -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>CENTRAL DE ATENDIMENTO</p>
+              <div class='padding-horizontal'>
+                <p>
+                  Serviço de Atendimento ao Consumidor (SAC)
+                  <a href='tel:08006449292'>0800 644 9292</a>.
+                  <br />
+                  Ouvidoria: 0800 707 4580 de segunda à sexta das 08h00 às 18h00 (exceto feriado);
+                  <br />
+                  Pessoas portadoras de deficiência auditiva ou de fala:
+                  <a href='tel:08006431717'>0800 643 1717</a>.
+                  <br />
+                  E-mail:
+                  <a href='mailto:ouvidoria.gazinseguros@gazin.com.br'>ouvidoria.gazinseguros@gazin.com.br</a>.
+                </p>
+              </div>
+            </section>
+            <!-- END CENTRAL DE ATENDIMENTO -->
+            <!-- START RESUMO DO REGULAMENTO DA PROMOCAO COMERCIAL -->
+            <div class="page-space">&nbsp;</div>
+            <section class='flex flex-1 flex-column'>
+              <p class='block__header'>RESUMO DO REGULAMENTO DA PROMOÇÃO COMERCIAL</p>
+              <div class='padding-horizontal'>
+                <p class='text-justify'>
+                  A
+                  <strong>GAZIN SEGUROS S/A.</strong>, inscrita no CNPJ/MF: 28.414.401/0001-07 é a empresa promotora desta
+                  promoção comercial e subscritora de Títulos de Capitalização da modalidade Incentivo, cuja Nota Técnica e suas
+                  Condições Gerais foram aprovadas pela Superintendência de Seguros Privados (SUSEP), por meio do processo nº
+                  15414.612159/2021-10, emitidos pela LIDERANÇA CAPITALIZAÇÃO S.A, inscrita no CNPJ sob o nº 60.853.264/0001-10.
+                  A empresa promotora cederá, gratuitamente, aos participantes que preencherem as condições estabelecidas neste
+                  regulamento o direito de participar dos sorteios relativos aos referidos Títulos de Capitalização.
+                  <strong class='text-underline'>CRITÉRIOS DE PARTICIPAÇÃO:</strong>
+                  Poderão participar desta promoção todas as pessoas naturais com idade igual ou maior a 18 (dezoito) anos,
+                  residentes e domiciliadas em todo o território nacional. Não poderão participar os colaboradores da empresa
+                  promotora, bem como os colaboradores das empresas que, direta ou indiretamente, estiverem envolvidas na
+                  organização desta promoção comercial. A participação nesta promoção caracteriza a aceitação e o reconhecimento
+                  integral dos termos e condições do presente regulamento.
+                  <strong>A vigência desta promoção comercial compreende o período de 01/07/2021 a 01/07/2026.</strong>
+                  Para participar desta promoção, o interessado deverá adquirir o seguro
+                  <strong>{{product.contractName}}</strong>
+                  da GAZIN SEGUROS ofertado em uma das lojas de varejo da GAZIN ou redes parceiras da GAZIN. Ao adquirir o
+                  referido seguro, será disponibilizado 01 (um) NÚMERO DA SORTE, com o qual o participante concorrerá à
+                  premiação prevista neste regulamento, durante o período de vigência do seguro contratado. O sorteio será
+                  realizado a partir do mês subsequente a aquisição do seguro contratado que ocorrerá sempre no último sábado de
+                  cada mês. Caso o prêmio do seguro seja pago de forma parcelada, o segurado deverá estar adimplente com o
+                  pagamento das parcelas na data da realização do sorteio, sob pena de desclassificação. Caso o seguro seja
+                  cancelado ou suspenso por falta de pagamento no ato da realização do sorteio e tenha o seu “número da sorte”
+                  sorteado, o participante não fará jus ao recebimento do prêmio. Na hipótese de reativação do seguro cancelado
+                  ou suspenso, o participante voltará a concorrer aos sorteios a partir do mês seguinte à regularização do
+                  pagamento do seguro.
+                  <strong>DA DISTRIBUIÇÃO DO NÚMERO DA SORTE:</strong>
+                  O NÚMERO DA SORTE distribuído aos participantes será composto por 5 (cinco) algarismos, compreendidos entre a
+                  numeração de 00.000 a 99.999. O número seguinte ao 99.999 será o número 00.000 e, consequentemente, o número
+                  anterior ao 00.000 será o número 99.999. Os NÚMEROS DA SORTE serão gerados de forma automática e totalmente
+                  aleatória. Com o NÚMERO DA SORTE recebido, o participante fará jus a participação dos sorteios durante o
+                  período de vigência do seguro contratado. A apuração do NÚMERO DA SORTE dar-se-á com base no resultado do
+                  sorteio da Loteria Federal realizado no último sábado do mês subsequente ao mês de aquisição do seguro. O
+                  Título será contemplado quando o seu número para sorteio coincidir, da esquerda para a direita, com os dígitos
+                  do número formado com os algarismos das unidades simples do primeiro ao quinto prêmio da Extração da Loteria
+                  Federal, lidos verticalmente nessa ordem, conforme a seguinte demonstração de um caso hipotético:
+                </p>
+                <div style="margin-left: 39%;">
+                  <img
+                    width='275mm'
+                    height='154mm'
+                    src='data:image/png;base64,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'
+                  />
+                </div>
+                <p>
+                  Caso o sorteio da Loteria Federal não se realize na data prevista, prevalecerá o sorteio que a Caixa Econômica
+                  Federal vier a determinar como substituto do concurso não efetuado. As datas de apuração poderão ser alteradas
+                  ou suspensas, mediante comunicação aos participantes pelos mesmos meios de divulgação desta promoção, na
+                  hipótese de restrição ou recomendação governamental por motivo de pandemia ou fato decorrente deste, ou ainda,
+                  qualquer outro motivo de força maior que venha ocorrer no período de vigência desta promoção comercial. Não há
+                  garantia de contemplação para o sorteio previsto nesta promoção comercial, pois a referida promoção utiliza-se
+                  de série aberta, na qual a quantidade de NÚMEROS DA SORTE é equivalente a base de seguros ativos e vigentes à
+                  época do período do sorteio.
+                  <strong>DA PREMIAÇÃO:</strong>
+                  O participante contemplado em sorteio fará jus ao recebimento de um prêmio no valor bruto de R$ 25.000,00
+                  (vinte e cinco mil reais), sobre o qual deverá ser deduzido 25% de Imposto de Renda, resultando em um prêmio
+                  líquido de Imposto de renda equivalente a R$ 18.750,00 (dezoito mil setecentos e cinquenta reais). O
+                  contemplado só terá direito ao recebimento da premiação se o cliente participante estiver rigorosamente em dia
+                  com o pagamento do prêmio do seguro contratado, seja
+                  {{product.contractName}}
+                  contratado. Os prêmios serão entregues em até 15 (quinze) dias da data da apuração, sem qualquer ônus aos
+                  contemplados, mediante a entrega dos documentos solicitados pela empresa promotora. Se o seguro for cancelado,
+                  estiver com pagamento em atraso ou suspenso por qualquer motivo o participante será desclassificado em caso de
+                  contemplação. A empresa promotora obriga-se a identificar todos os participantes cessionários ganhadores dos
+                  prêmios de sorteio. O contemplado será avisado do direito ao recebimento da premiação, devendo apresentar a
+                  comprovação do pagamento do seguro contratado. Os resultados dos sorteios previstos para esta promoção
+                  comercial poderão ser consultados nos sites:
+                  <a href='www.gazinseguros.com.br'>www.gazinseguros.com.br</a>,
+                  <a href='www.lidercap.com.br'>www.lidercap.com.br</a>
+                  e
+                  <a href='www.loterias.caixa.gov.br'>www.loterias.caixa.gov.br</a>. O titular sempre terá direito ao
+                  recebimento em dinheiro se assim o desejar. É proibida a venda de título de capitalização a menores de 16
+                  (dezesseis) anos. A aprovação do Título de Capitalização pela SUSEP não implica, por parte da Autarquia, em
+                  incentivo ou recomendação a sua aquisição, representando exclusivamente, sua adequação às normas em vigor.
+                </p>
+              </div>
+            </section>
+            <!-- END RESUMO DO REGULAMENTO DA PROMOCAO COMERCIAL -->
+            <!-- START AUTORIZAÇÃO DE DÉBITO EM CONTA -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>AUTORIZAÇÃO DE DÉBITO EM CONTA</p>
+              <div class='padding-horizontal'>
+                <p class='text-justify'>
+                  Eu,
+                  <span class='to-uppercase'>{{policy.insured.name}}</span>, inscrito no CPF/MF sob o nº
+                  {{toCPF policy.insured.cpf}}, proponente do seguro
+                  {{product.contractName}}, descrito no Bilhete de Seguro nº
+                  {{policy.ticket}}, autorizo que o pagamento do prêmio de seguro, no valor de
+                  {{toMoneyBRL policy.payments.0.totalValue}}
+                  seja realizado como débito em conta na Agência de nº
+                  {{policy.payments.0.agency}}, conta corrente de nº
+                  {{policy.payments.0.account}}.
+                </p>
+              </div>
+            </section>
+            <!-- END AUTORIZAÇÃO DE DÉBITO EM CONTA -->
+            <!-- START POLITICA DE PRIVACIDADE -->
+            <div class="page-space">&nbsp;</div>
+            <section>
+              <p class='block__header'>POLÍTICA DE PRIVACIDADE</p>
+              <div class='padding-horizontal'>
+                <p class='text-justify'>
+                  O Cliente está ciente que os dados pessoais fornecidos através deste formulário serão tratados pela Gazin
+                  Seguros para a finalidade de cumprimento da obrigação legal SUSEP, prestação de serviços dos produtos
+                  ofertados pela Gazin Seguros, atendimento aos sinistros. A Gazin Seguros garante que não compartilhará os
+                  dados pessoais coletados e tratados, exceto nas hipóteses previstas em nosso Aviso de Privacidade e nas demais
+                  hipóteses legais. O Cliente leu, compreendeu e não tem dúvidas quanto ao Aviso de Privacidade disponível no
+                  website da Gazin Seguros, onde estão demonstradas de maneira clara e ostensiva as informações sobre as
+                  atividades de tratamento de dados pessoais e as medidas de segurança adotadas pela Gazin Seguros." Abaixo
+                  segue o link para acesso a Política de Privacidade:
+                  <a
+                    href='https://www.gazinseguros.com.br/politica-de-privacidade'
+                  >https://www.gazinseguros.com.br/politica-de-privacidade</a>.
+                </p>
+              </div>
+            </section>
+            <!-- END POLITICA DE PRIVACIDADE -->
+            <!-- START ACEITE DE CONDIÇÕES GERAIS DE SEGURO -->
+            <br><br>
+            <section class='flex flex-1 flex-column'>
+              <p class='block__header'>ACEITE DE CONDIÇÕES GERAIS DE SEGURO</p>
+              <div class='flex flex-1 padding-horizontal' style='padding: 2.65mm 0mm'>
+                <div class='flex flex-1' style='padding-left: 5.30mm'>X</div>
+                <div class='flex' style='flex: 5'>Li e estou de acordo com os termos e condições gerais de seguros</div>
+                <div class='flex flex-2'>Data: {{toDate policy.createdAt}}</div>
+                <div class='flex flex-1'>Hora: {{toTime policy.createdAt}}</div>
+              </div>
+              <hr />
+            </section>
+            <!-- END ACEITE DE CONDIÇÕES GERAIS DE SEGURO -->
+            <br>
+            <br /><br /><br />
+            <!-- START ASSINATURA -->
+            <div class='flex flex-1 align-center justify-center'>
+              <img
+                src='data:image/png;base64,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'
+                alt='Signature'
+              />
+            </div>
+            <!-- END ASSINATURA -->
+          </td>
+        </tr>
+      </tbody>
+      <tfoot id="print-table-tfoot">
+        <tr>
+          <td>
+            <!-- START FOOTER -->
+            <div class="page-footer-space">&nbsp;</div>
+            <footer class='page-footer flex flex-1 justify-center flex-column align-center'>
+              <p>
+                <strong>Gazin Seguros S.A. - CNPJ: 28.414.401/0001-07 - Código de Registro SUSEP: 02968 </strong>
+              </p>
+              <p style='margin: 0; padding: 0'>
+                <strong>Endereço: Rua Pedrelina Macedo e Silva, Nº 100, Centro, Douradina - PR. </strong>
+              </p>
+            </footer>
+            <!-- END FOOTER -->
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </body>
+</html>

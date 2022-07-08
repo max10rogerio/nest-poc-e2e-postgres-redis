@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estorno de pagamento do seguro realizado</title>
+  </head>
+  <body style="margin: 0">
+    {{> header}}
+    <!-- START CONTENT -->
+    <table
+      style="
+        width: 600px;
+        height: 366px;
+        background: #f6f6f8;
+        left: 0%;
+        right: 0%;
+        top: 0%;
+        bottom: 0%;
+        border: none;
+        border-spacing: 0;
+      "
+    >
+      <tbody>
+        <tr>
+          <td>
+            <div
+              style="
+                padding: 24px 16px;
+                width: 507px;
+                background: #ffffff;
+                border-radius: 8px;
+                margin-left: 30px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              <p
+                style="
+                  font: 16px 'Helvetica Neue', Arial, Helvetica;
+                  text-align: center;
+                  font-weight: 400;
+                  line-height: 24px;
+                  color: #646981;
+                  padding: 0px 16px;
+                  margin-top: 0px;
+                "
+              >
+              Realizamos algumas tentativas de débito em sua conta Gazin Bank referente à parcela mensal do <strong>Seguro Residencial Premiável</strong>, mas não obtivemos sucesso.
+              </p>
+              <p
+                style="
+                  font: 16px 'Helvetica Neue', Arial, Helvetica;
+                  text-align: center;
+                  font-weight: 400;
+                  line-height: 24px;
+                  color: #646981;
+                  padding: 0px 16px;
+                  margin-top: 0px;
+                "
+              >
+              Por isso, infelizmente, o seu seguro foi cancelado automaticamente.
+              </p>
+              <div style="margin: auto; width: 50%; background: #f6f6f8">
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    text-align: center;
+                    margin-bottom: 4px;
+                    padding-top: 10px;
+                  "
+                >
+                  Número do bilhete
+                </p>
+                <p
+                  style="
+                    font: 16px 'Helvetica Neue', Arial, Helvetica;
+                    line-height: 24px;
+                    color: #646981;
+                    text-align: center;
+                    margin-top: 5px;
+                    padding-bottom: 10px;
+                  "
+                >
+                  <strong>{{ticketNumber}}</strong>
+                </p>
+              </div>
+              <p
+              style="
+                font: 16px 'Helvetica Neue', Arial, Helvetica;
+                text-align: center;
+                font-weight: 400;
+                line-height: 24px;
+                color: #646981;
+                margin-top: 0px;
+              "
+            >
+            Se você ficou com alguma dúvida, entre em contato e iremos te ajudar.
+            </p>
+              
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- END CONTENT -->
+    {{> footer}}
+  </body>
+</html>
