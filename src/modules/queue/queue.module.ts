@@ -15,7 +15,7 @@ import { MailQueueModule } from './mail';
         redis: {
           host: 'redis',
           port: 6379,
-          enableReadyCheck: true,
+          enableReadyCheck: false,
           enableOfflineQueue: true,
           maxRetriesPerRequest: null,
           keepAlive: 10000,
