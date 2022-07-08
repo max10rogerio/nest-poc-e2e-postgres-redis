@@ -7,8 +7,9 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    env: NODE_ENV=test
-      PORT=3000
+    env:
+      NODE_ENV: test
+      PORT: 3000
       JEST_JUNIT_OUTPUT_DIR: coverage/
       SENTRY_DSN: https://4e2104755eed46999f007a7dc439fdff@sentry.gazin.com.br//108
       POSTGRES_DATABASE: gazin_seguros_bank_test
