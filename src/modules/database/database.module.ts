@@ -11,6 +11,8 @@ import { ConfigModule } from '../config/config.module';
       useFactory: (configService: ConfigService) => {
         const configs = configService.get('typeormConfig');
 
+        console.log(JSON.stringify(configs, null, 2))
+
         return configs;
       },
     }),
