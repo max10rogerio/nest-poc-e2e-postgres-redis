@@ -15,10 +15,8 @@ import { MailQueueModule } from './mail';
         redis: {
           host: 'redis',
           port: 6379,
-          enableReadyCheck: false,
           enableOfflineQueue: true,
-          maxRetriesPerRequest: null,
-          keepAlive: 10000,
+          keepAlive: 100000,
           lazyConnect: true,
         },
         prefix: `gsbank-${configService.get('env')}`,
