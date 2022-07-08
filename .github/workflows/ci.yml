@@ -25,6 +25,7 @@ jobs:
           --health-retries 5
       redis:
         image: redis:latest
+        options: --entrypoint redis-server
         ports:
           - 6379:6379
     steps:
@@ -46,7 +47,7 @@ jobs:
       - name: Install yarn deps
         run: yarn
       - name: Run Tests (E2E and Unit)
-        run: yarn test:cov --detectOpenHandles
+        run: yarn test:cov --detectOpenHandles --coverage
         env:
           NODE_ENV: test
           PORT: 3000
@@ -54,7 +55,7 @@ jobs:
           SENTRY_DSN: https://4e2104755eed46999f007a7dc439fdff@sentry.gazin.com.br//108
           POSTGRES_DATABASE: gazin_seguros_bank_test
           POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: localhost
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           REDIS_URI: redis://redis:${{ job.services.redis.ports[6379] }}
