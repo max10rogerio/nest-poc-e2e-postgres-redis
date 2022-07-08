@@ -57,4 +57,4 @@ jobs:
           POSTGRES_HOST: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          REDIS_URI: redis://redis:6379
+          REDIS_URI: redis://redis:${{ job.services.redis.ports[6379] }}
