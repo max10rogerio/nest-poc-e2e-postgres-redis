@@ -17,6 +17,7 @@ import { MailQueueModule } from './mail';
           port: 6379,
           enableReadyCheck: true,
           enableOfflineQueue: true,
+          maxRetriesPerRequest: null,
           keepAlive: 10000,
           lazyConnect: true,
         },
