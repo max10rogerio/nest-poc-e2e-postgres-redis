@@ -12,7 +12,14 @@ import { MailQueueModule } from './mail';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService<Env>) => ({
-        redis: configService.get<Env['redis']>('redis').uri as any,
+        redis: {
+          host: 'redis',
+          port: 6379,
+          enableReadyCheck: true,
+          enableOfflineQueue: true,
+          keepAlive: 10000,
+          lazyConnect: true,
+        },
         prefix: `gsbank-${configService.get('env')}`,
         defaultJobOptions: {
           removeOnComplete: true,
