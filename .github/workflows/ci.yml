@@ -51,7 +51,7 @@ jobs:
           && sudo apt-get update \
           && sudo apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
           --no-install-recommends \
-          && rm -rf /var/lib/apt/lists/*
+          && sudo rm -rf /var/lib/apt/lists/*
       - name: Install yarn deps
         run: yarn
       - name: Run Tests (E2E and Unit)
