@@ -1,6 +1,5 @@
 module.exports = {
   rootDir: '.',
-  testTimeout: 15000,
   testEnvironment: 'node',
   modulePaths: ['<rootDir>'],
   moduleFileExtensions: ['js', 'json', 'ts'],

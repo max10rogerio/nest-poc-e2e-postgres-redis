@@ -7,14 +7,24 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
+    env: NODE_ENV=test
+      PORT=3000
+      JEST_JUNIT_OUTPUT_DIR=coverage/
+      SENTRY_DSN=https://4e2104755eed46999f007a7dc439fdff@sentry.gazin.com.br//108
+      POSTGRES_DATABASE=gazin_seguros_bank_test
+      POSTGRES_PORT=5432
+      POSTGRES_HOST=postgres
+      POSTGRES_USER=postgres
+      POSTGRES_PASSWORD=postgres
+      REDIS_URI=redis://redis:6379
     services:
       postgres:
         image: postgres:14.1
         env:
-          POSTGRES_HOST: "postgres"
-          POSTGRES_DB: "gazin_seguros_bank_test"
-          POSTGRES_USER: "postgres"
-          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_HOST: 'postgres'
+          POSTGRES_DB: 'gazin_seguros_bank_test'
+          POSTGRES_USER: 'postgres'
+          POSTGRES_PASSWORD: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: trust
         ports:
           - 5432:5432
@@ -30,7 +40,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "yarn"
+          cache: 'yarn'
       - name: Install puppeteer deps
         run: |
           apt-get update \

@@ -16,7 +16,6 @@ export const dbConfiguration = registerAs('typeormConfig', (): TypeOrmModuleOpti
     migrations: [path.resolve(__dirname, '**', MIGRATIONS_DIR_NAME, '*{.ts,.js}')],
     autoLoadEntities: true,
     migrationsRun: true,
-    connectTimeoutMS: 30000,
     dropSchema: needsDropSchema,
     cli: {
       migrationsDir: `src/modules/database/${MIGRATIONS_DIR_NAME}`,

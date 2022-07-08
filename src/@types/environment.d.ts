@@ -44,9 +44,6 @@ declare global {
       MAIL_FROM?: string;
       MAIL_MOCK?: string;
       REDIS_URI?: string;
-      REDIS_HOST?: string;
-      REDIS_PORT?: string;
-      REDIS_PASSWORD?: string;
       CRON_EXPORT_DIH: string;
       CRON_EXPORT_RE: string;
     }

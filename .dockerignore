@@ -1,0 +1,13 @@
+Dockerfile
+.dockerignore
+
+*.log
+
+.vscode
+.husky
+.git
+node_modules
+dist
+coverage
+scripts
+README.md

@@ -75,9 +75,6 @@ export const loadEmailEnvs = (): Env['mail'] => ({
 
 export const loadRedisEnvs = (): Env['redis'] => ({
   uri: process.env.REDIS_URI || 'redis://localhost:6379',
-  host: process.env.REDIS_HOST || 'localhost',
-  port: Number(process.env.REDIS_PORT) || 6379,
-  password: process.env.REDIS_PASSWORD || undefined,
 });
 
 export const loadFtpEnvs = (): Env['ftp'] => ({
@@ -109,9 +106,6 @@ export type Env = {
   sentry_dsn: string;
   redis: {
     uri: string;
-    host: string;
-    port: number;
-    password: string;
   };
   admin: {
     username: string;

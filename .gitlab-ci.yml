@@ -1,0 +1,229 @@
+# .gitlab-ci.yml
+image: docker:19.03.12
+
+stages:
+  - tests
+  - analysis
+  - build
+  - deploy
+  - release
+
+.pre-docker-image-script: &docker-script
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+.env-scrip: &ENV
+  - echo Branch Atual - $CI_COMMIT_BRANCH
+  - echo Commit Ref Name - $CI_COMMIT_REF_NAME
+  - echo Branch QA - $BRANCH_QA
+  - |-
+    if [[ $CI_COMMIT_REF_NAME = $TAG_BRANCH_QA ]]; then
+      cp $ENV_FILE_QA ./.env; cp $ENV_FILE_QA ./.devops/helm/.env;
+    elif [[ $CI_COMMIT_REF_NAME = $TAG_BRANCH_STAGE ]]; then
+      cp $ENV_FILE_HML ./.env; cp $ENV_FILE_HML ./.devops/helm/.env;
+    elif [[ $CI_COMMIT_REF_NAME = $TAG_BRANCH_PRODUCTION ]]; then
+      cp $ENV_FILE_PROD ./.env; cp $ENV_FILE_PROD ./.devops/helm/.env;
+    else
+      echo "Branch invalida"
+    fi
+
+cache: &global_cache
+  key:
+    files:
+      - yarn.lock
+  paths:
+    - node_modules/
+    - .yarn-cache/
+    - .npm/
+
+docker_image_publish:
+  stage: build
+  image: docker:19.03.12
+  allow_failure: false
+  script:
+    - *docker-script
+    - *ENV
+    - docker build -f Otimized.Dockerfile --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    - docker rmi -f $CI_IMAGE_NAME
+    - docker rmi -f $(docker images $CI_IMAGE_NAME -q)
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_QA
+      when: always
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_STAGE
+      when: always
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_PRODUCTION
+      when: always
+    - when: never
+
+deploy_qa:
+  stage: deploy
+  image: docker.io/gazin/k8s:1.0
+  allow_failure: false
+  cache: []
+  environment:
+    name: bank-stage
+  script:
+    - *ENV
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+    - kubectl create namespace ${NAMESPACE_QA} --dry-run=client -o yaml| kubectl apply -f -
+    - kubectl label namespace ${NAMESPACE_QA} --overwrite registry=common tls=gazinseguros
+    - |-
+      helm upgrade ${RELEASE_NAME_QA} --install --namespace ${NAMESPACE_QA} .devops/helm \
+        --set ingressNginx.enabled=true \
+        --set fullnameOverride=${RELEASE_NAME_QA} \
+        --set ingressNginx.hosts[0].host=${HOSTNAME_QA} \
+        --set ingressNginx.hosts[0].paths[0].path=/ \
+        --set ingressNginx.tls[0].hosts[0]=${HOSTNAME_QA} \
+        --set ingressNginx.tls[0].secretName=${SECRET_NAME} \
+        --set image.repository=$CI_REGISTRY_IMAGE \
+        --set image.tag=$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA \
+        --set ddtrace.service=api-gsbank-qa \
+        --set ddtrace.env=gsbank-qa \
+        --set replicaCount=1
+  dependencies:
+    - docker_image_publish
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_QA
+      when: always
+    - when: never
+
+deploy_homolg:
+  stage: deploy
+  image: docker.io/gazin/k8s:1.0
+  allow_failure: false
+  environment:
+    name: bank-homolog
+  script:
+    - *ENV
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+
+    - kubectl create namespace ${NAMESPACE_HML} --dry-run=client -o yaml| kubectl apply -f -
+    - kubectl label namespace ${NAMESPACE_HML} --overwrite registry=common tls=gazinseguros
+    - |-
+      helm upgrade ${RELEASE_NAME_HML} --install --namespace ${NAMESPACE_HML} .devops/helm \
+        --set ingressNginx.enabled=true \
+        --set fullnameOverride=${RELEASE_NAME_HML} \
+        --set ingressNginx.hosts[0].host=${HOSTNAME_HML} \
+        --set ingressNginx.hosts[0].paths[0].path=/ \
+        --set ingressNginx.tls[0].hosts[0]=${HOSTNAME_HML} \
+        --set ingressNginx.tls[0].secretName=${SECRET_NAME} \
+        --set image.repository=$CI_REGISTRY_IMAGE \
+        --set image.tag=$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA \
+        --set ddtrace.service=api-gsbank-hml \
+        --set ddtrace.env=gsbank-hml \
+        --set replicaCount=1
+  dependencies:
+    - docker_image_publish
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_STAGE
+      when: always
+    - when: never
+
+deploy_prod:
+  stage: deploy
+  image: docker.io/gazin/k8s:1.0
+  allow_failure: false
+  environment:
+    name: bank-prod
+  script:
+    - *ENV
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+
+    - kubectl create namespace ${NAMESPACE_PROD} --dry-run=client -o yaml| kubectl apply -f -
+    - kubectl label namespace ${NAMESPACE_PROD} --overwrite registry=common tls=gazinseguros
+    - |-
+      helm upgrade ${RELEASE_NAME_PROD} --install --namespace ${NAMESPACE_PROD} .devops/helm \
+        --set ingressNginx.enabled=true \
+        --set fullnameOverride=${RELEASE_NAME_PROD} \
+        --set ingressNginx.hosts[0].host=${HOSTNAME_PROD} \
+        --set ingressNginx.hosts[0].paths[0].path=/ \
+        --set ingressNginx.tls[0].hosts[0]=${HOSTNAME_PROD} \
+        --set ingressNginx.tls[0].secretName=${SECRET_NAME} \
+        --set image.repository=$CI_REGISTRY_IMAGE \
+        --set image.tag=$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA \
+        --set ddtrace.service=api-gsbank-prod \
+        --set ddtrace.env=gsbank-prod \
+        --set replicaCount=1
+  dependencies:
+    - docker_image_publish
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $TAG_BRANCH_PRODUCTION
+      when: always
+    - when: never
+
+sonar:
+  stage: analysis
+  image: sonarsource/sonar-scanner-cli:latest
+  allow_failure: false
+  variables:
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar' # Defines the location of the analysis task cache
+    GIT_DEPTH: 0 # Tells git to fetch all the branches of the project, required by the analysis task
+  script:
+    - export PATH=$PATH:/sbin
+    - apk update && apk upgrade && apk add nodejs npm
+    - npm i -g yarn
+    - sonar-scanner -D sonar.qualitygate.wait=true
+  dependencies:
+    - tests
+  tags: #these are gitlab-runners tags, not git tags
+    - run-local
+  only:
+    - merge_requests
+    - develop
+
+tests:
+  image: node:16
+  stage: tests
+  allow_failure: false
+  services:
+    - postgres:14.1
+    - redis:latest
+  variables:
+    POSTGRES_HOST: 'postgres'
+    POSTGRES_DB: 'gazin_seguros_bank_test'
+    POSTGRES_USER: 'postgres'
+    POSTGRES_PASSWORD: 'postgres'
+    POSTGRES_HOST_AUTH_METHOD: trust
+  only:
+    - merge_requests
+    - develop
+  cache:
+    <<: *global_cache
+  coverage: /All files\s*\|\s*([\d\.]+)/
+  artifacts:
+    reports:
+      cobertura: coverage/cobertura-coverage.xml
+      junit: coverage/junit.xml
+    paths:
+      - coverage/
+  script:
+    # Install puppeteer deps
+    - |
+      apt-get update \
+      && apt-get install -y wget gnupg \
+      && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+      && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+      && apt-get update \
+      && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
+      --no-install-recommends \
+      && rm -rf /var/lib/apt/lists/*
+    - cp $ENV_FILE_TEST ./.test.env
+    - yarn
+    - sleep 10
+    - yarn test:cov --detectOpenHandles
+
+release:
+  image: node:16
+  stage: release
+  allow_failure: false
+  cache:
+    <<: *global_cache
+  only:
+    refs:
+      - master
+  script:
+    - yarn
+    - yarn semantic-release
